@@ -17,7 +17,7 @@
 import calendar
 import errno
 import locale
-import optparse
+import argparse
 import os
 import sys
 import time
@@ -95,7 +95,7 @@ def rrset_to_text(m):
         s.write(';;  bailiwick: %s\n' % m['bailiwick'])
 
     if 'count' in m:
-        s.write(';;      count: %s\n' % locale.format('%d', m['count'], True))
+        s.write(';;      count: %s\n' % locale.format_string('%d', m['count'], True))
 
     if 'time_first' in m:
         s.write(';; first seen: %s\n' % sec_to_text(m['time_first']))
@@ -190,25 +190,25 @@ def main():
     global cfg
     global options
 
-    parser = optparse.OptionParser()
-    parser.add_option('-c', '--config', dest='config', type='string',
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--config', dest='config', type='string',
         help='config file', default=DEFAULT_CONFIG_FILE)
-    parser.add_option('-r', '--rrset', dest='rrset', type='string',
+    parser.add_argument('-r', '--rrset', dest='rrset', type='string',
         help='rrset <ONAME>[/<RRTYPE>[/BAILIWICK]]')
-    parser.add_option('-n', '--rdataname', dest='rdata_name', type='string',
+    parser.add_argument('-n', '--rdataname', dest='rdata_name', type='string',
         help='rdata name <NAME>[/<RRTYPE>]')
-    parser.add_option('-i', '--rdataip', dest='rdata_ip', type='string',
+    parser.add_argument('-i', '--rdataip', dest='rdata_ip', type='string',
         help='rdata ip <IPADDRESS|IPRANGE|IPNETWORK>')
-    parser.add_option('-s', '--sort', dest='sort', type='string', help='sort key')
-    parser.add_option('-R', '--reverse', dest='reverse', action='store_true', default=False,
+    parser.add_argument('-s', '--sort', dest='sort', type='string', help='sort key')
+    parser.add_argument('-R', '--reverse', dest='reverse', action='store_true', default=False,
         help='reverse sort')
-    parser.add_option('-j', '--json', dest='json', action='store_true', default=False,
+    parser.add_argument('-j', '--json', dest='json', action='store_true', default=False,
         help='output in JSON format')
-    parser.add_option('-l', '--limit', dest='limit', type='int', default=0,
+    parser.add_argument('-l', '--limit', dest='limit', type='int', default=0,
         help='limit number of results')
 
-    parser.add_option('', '--before', dest='before', type='string', help='only output results seen before this time')
-    parser.add_option('', '--after', dest='after', type='string', help='only output results seen after this time')
+    parser.add_argument('', '--before', dest='before', type='string', help='only output results seen before this time')
+    parser.add_argument('', '--after', dest='after', type='string', help='only output results seen after this time')
 
     options, args = parser.parse_args()
     if args:

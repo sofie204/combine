@@ -45,8 +45,9 @@ def tiq_output(reg_file, enr_file):
     try:
         bale_reg_csvgz(inbound_data, os.path.join(tiq_dir, 'raw', 'public_inbound', today + '.csv.gz'))
         bale_reg_csvgz(outbound_data, os.path.join(tiq_dir, 'raw', 'public_outbound', today + '.csv.gz'))
-    except:
-        pass
+    except Exception as e:
+        #pass
+        logger.error('Failed to process data: %s', e)
 
     inbound_data = [row for row in enr_data if row[2] == 'inbound']
     outbound_data = [row for row in enr_data if row[2] == 'outbound']
@@ -156,11 +157,11 @@ def bale_CRITs(harvest, filename):
     if config.has_option('Baler', 'crits_username'):
         data['username'] = config.get('Baler', 'crits_username')
     else:
-        raise('Please check the combine.cnf file for the crits_username field in the [Baler] section')
+        raise ValueError('Please check the combine.cnf file for the crits_username field in the [Baler] section')
     if config.has_option('Baler', 'crits_api_key'):
         data['api_key'] = config.get('Baler', 'crits_api_key')
     else:
-        raise ('Please check the combine.cnf file for the crits_api_key field in the [Baler] section')
+        raise ValueError('Please check the combine.cnf file for the crits_api_key field in the [Baler] section')
     if config.has_option('Baler', 'crits_campaign'):
         data['campaign'] = config.get('Baler', 'crits_campaign')
     else:
@@ -169,7 +170,7 @@ def bale_CRITs(harvest, filename):
     if config.has_option('Baler', 'crits_url'):
         base_url = config.get('Baler', 'crits_url')
     else:
-        raise ('Please check the combine.cnf file for the crits_url field in the [Baler] section')
+        raise ValueError('Please check the combine.cnf file for the crits_url field in the [Baler] section')
     if config.has_option('Baler', 'crits_maxThreads'):
         maxThreads = int(config.get('Baler', 'crits_maxThreads'))
     else:
