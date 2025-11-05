@@ -160,7 +160,7 @@ def thresh(input_file, output_file):
         return
 
     logger.info('Loading raw feed data from %s', input_file)
-    with open(input_file, 'rb') as f:
+    with open(input_file, 'r', encoding='utf-8') as f:
         crop = json.load(f)
 
     harvest = []
@@ -210,7 +210,7 @@ def thresh(input_file, output_file):
             pass
 
     logger.info('Storing parsed data in %s', output_file)
-    with open(output_file, 'wb') as f:
+    with open(output_file, 'w', encoding='utf-8', newline='') as f:
         json.dump(harvest, f, indent=2)
 
 

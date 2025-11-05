@@ -24,7 +24,7 @@ geo_data = pygeoip.GeoIP('data/GeoIP.dat', pygeoip.MEMORY_CACHE)
 
 
 def load_gi_org(filename):
-    with open(filename, 'rb') as f:
+    with open(filename, 'r', encoding='utf-8') as f:
         org_reader = csv.DictReader(f, fieldnames=['start', 'end', 'org'])
         for row in org_reader:
             gi_org[row['start']] = (IPRange(row['start'], row['end']), str(row['org'], errors='replace'))

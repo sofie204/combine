@@ -27,10 +27,10 @@ def tiq_output(reg_file, enr_file):
     tiq_dir = os.path.join(config.get('Baler', 'tiq_directory'), 'data')
     today = dt.datetime.today().strftime('%Y%m%d')
 
-    with open(reg_file, 'rb') as f:
+    with open(reg_file, 'r', encoding='utf-8') as f:
         reg_data = json.load(f)
 
-    with open(enr_file, 'rb') as f:
+    with open(enr_file, 'r', encoding='utf-8') as f:
         enr_data = json.load(f)
     logger.info('Preparing tiq directory structure under %s' % tiq_dir)
     if not os.path.isdir(tiq_dir):
@@ -63,7 +63,7 @@ def tiq_output(reg_file, enr_file):
 def bale_reg_csvgz(harvest, output_file):
     """ bale the data as a gziped csv file"""
     logger.info('Output regular data as GZip CSV to %s' % output_file)
-    with gzip.open(output_file, 'wb') as csv_file:
+    with gzip.open(output_file, 'wt', encoding='utf-8', newline='') as csv_file:
         bale_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         # header row
@@ -74,7 +74,7 @@ def bale_reg_csvgz(harvest, output_file):
 def bale_reg_csv(harvest, output_file):
     """ bale the data as a csv file"""
     logger.info('Output regular data as CSV to %s' % output_file)
-    with open(output_file, 'wb') as csv_file:
+    with open(output_file, 'w', encoding='utf-8', newline='') as csv_file:
         bale_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         # header row
@@ -85,7 +85,7 @@ def bale_reg_csv(harvest, output_file):
 def bale_enr_csv(harvest, output_file):
     """ output the data as an enriched csv file"""
     logger.info('Output enriched data as CSV to %s' % output_file)
-    with open(output_file, 'wb') as csv_file:
+    with open(output_file, 'w', encoding='utf-8', newline='') as csv_file:
         bale_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         # header row
@@ -96,7 +96,7 @@ def bale_enr_csv(harvest, output_file):
 def bale_enr_csvgz(harvest, output_file):
     """ output the data as an enriched gziped csv file"""
     logger.info('Output enriched data as GZip CSV to %s' % output_file)
-    with gzip.open(output_file, 'wb') as csv_file:
+    with gzip.open(output_file, 'wt', encoding='utf-8', newline='') as csv_file:
         bale_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         # header row
@@ -207,8 +207,8 @@ def bale(input_file, output_file, output_format, is_regular):
         return
 
     logger.info('Reading processed data from %s' % input_file)
-    with open(input_file, 'rb') as f:
-        harvest = json.load(f, encoding='utf8')
+    with open(input_file, 'r', encoding='utf-8') as f:
+        harvest = json.load(f)
 
     # TODO: also need plugins here (cf. #23)
     if is_regular:
