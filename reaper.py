@@ -12,7 +12,7 @@ def exception_handler(request, exception):
     logger.error("Request %r failed: %r" % (request, exception))
 
 def reap(file_name):
-    config = configparser.SafeConfigParser(allow_no_value=False)
+    config = configparser.ConfigParser(allow_no_value=False)
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('Reaper: Could not read combine.cfg.')
@@ -23,14 +23,14 @@ def reap(file_name):
     outbound_url_file = config.get('Reaper', 'outbound_urls')
 
     try:
-        with open(inbound_url_file, 'rb') as f:
-    	    inbound_urls = [url.rstrip('\n') for url in f.readlines()]
+        with open(inbound_url_file, 'r', encoding='utf-8') as f:
+            inbound_urls = [url.rstrip('\n') for url in f.readlines()]
     except EnvironmentError as e:
         logger.error('Reaper: Error while opening "%s" - %s' % (inbound_url_file, e.strerror))
         return
 
     try:
-        with open(outbound_url_file, 'rb') as f:
+        with open(outbound_url_file, 'r', encoding='utf-8') as f:
             outbound_urls = [url.rstrip('\n') for url in f.readlines()]
     except EnvironmentError as e:
         logger.error('Reaper: Error while opening "%s" - %s' % (outbound_url_file, e.strerror))
@@ -50,7 +50,7 @@ def reap(file_name):
     inbound_harvest = [(response.url, response.status_code, response.text) for response in inbound_responses if response]
     for each in inbound_files:
         try:
-            with open(each,'rb') as f:
+            with open(each,'r', encoding='utf-8') as f:
                 inbound_harvest.append(('file://'+each, 200, f.read()))
         except IOError as e:
             assert isinstance(logger, logging.Logger)
@@ -67,7 +67,7 @@ def reap(file_name):
     outbound_harvest = [(response.url, response.status_code, response.text) for response in outbound_responses if response]
     for each in outbound_files:
         try:
-            with open(each,'rb') as f:
+            with open(each,'r', encoding='utf-8') as f:
                 outbound_harvest.append(('file://'+each, 200, f.read()))
         except IOError as e:
             assert isinstance(logger, logging.Logger)
@@ -76,7 +76,7 @@ def reap(file_name):
     logger.info('Storing raw feeds in %s' % file_name)
     harvest = {'inbound': inbound_harvest, 'outbound': outbound_harvest}
 
-    with open(file_name, 'wb') as f:
+    with open(file_name, 'w', encoding='utf-8') as f:
         json.dump(harvest, f, indent=2)
 
 

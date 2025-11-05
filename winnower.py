@@ -27,7 +27,7 @@ def load_gi_org(filename):
     with open(filename, 'r', encoding='utf-8') as f:
         org_reader = csv.DictReader(f, fieldnames=['start', 'end', 'org'])
         for row in org_reader:
-            gi_org[row['start']] = (IPRange(row['start'], row['end']), str(row['org'], errors='replace'))
+            gi_org[row['start']] = (IPRange(row['start'], row['end']), row['org'])
 
     return gi_org
 
@@ -122,7 +122,7 @@ def is_fqdn(address):
 
 
 def winnow(in_file, out_file, enr_file):
-    config = configparser.SafeConfigParser(allow_no_value=True)
+    config = configparser.ConfigParser(allow_no_value=True)
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('Winnower: Could not read combine.cfg.')
@@ -155,7 +155,7 @@ def winnow(in_file, out_file, enr_file):
         dnsdb = None
         logger.info('Invalid DNSDB configuration found')
 
-    with open(in_file, 'rb') as f:
+    with open(in_file, 'r', encoding='utf-8') as f:
         crop = json.load(f)
 
     # TODO: make these locations configurable?
@@ -196,13 +196,11 @@ def winnow(in_file, out_file, enr_file):
             logger.error('Could not determine address type for %s listed as %s' % (addr, addr_type))
 
     logger.info('Dumping results')
-    with open(out_file, 'wb') as f:
-        w_data = json.dumps(wheat, indent=2, ensure_ascii=False).encode('utf8')
-        f.write(w_data)
+    with open(out_file, 'w', encoding='utf-8') as f:
+        json.dump(wheat, f, indent=2, ensure_ascii=False)
 
-    with open(enr_file, 'wb') as f:
-        e_data = json.dumps(enriched, indent=2, ensure_ascii=False).encode('utf8')
-        f.write(e_data)
+    with open(enr_file, 'w', encoding='utf-8') as f:
+        json.dump(enriched, f, indent=2, ensure_ascii=False)
 
 
 if __name__ == "__main__":

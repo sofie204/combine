@@ -141,7 +141,7 @@ def process_haleys(response, source, direction):
 
 def process_malwaregroup(response, source, direction):
     data = []
-    soup = bs4.BeautifulSoup(response)
+    soup = bs4.BeautifulSoup(response, 'html.parser')
     for row in soup.find_all('tr'):
         if row.td:
             i = row.td.text
@@ -152,7 +152,7 @@ def process_malwaregroup(response, source, direction):
 
 def thresh(input_file, output_file):
 
-    config = configparser.SafeConfigParser(allow_no_value=False)
+    config = configparser.ConfigParser(allow_no_value=False)
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('Thresher: Could not read combine.cfg.')

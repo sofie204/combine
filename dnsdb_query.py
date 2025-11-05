@@ -218,7 +218,7 @@ def main():
     try:
         cfg = parse_config(options.config)
     except IOError as e:
-        sys.stderr.write(e.message)
+        sys.stderr.write(str(e))
         sys.exit(1)
 
 

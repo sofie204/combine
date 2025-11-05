@@ -17,7 +17,7 @@ logger = get_logger('baler')
 
 
 def tiq_output(reg_file, enr_file):
-    config = configparser.SafeConfigParser()
+    config = configparser.ConfigParser()
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('tiq_output: Could not read combine.cfg.')
@@ -147,7 +147,7 @@ def bale_CRITs(harvest, filename):
     #   -> type of feed (bot vs spam vs ddos, you get the picture)
     data = {'confidence': 'medium'}
     start_time = time.time()
-    config = configparser.SafeConfigParser()
+    config = configparser.ConfigParser()
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('tiq_output: Could not read combine.cfg.\n')
@@ -199,7 +199,7 @@ def bale_CRITs(harvest, filename):
 
 
 def bale(input_file, output_file, output_format, is_regular):
-    config = configparser.SafeConfigParser()
+    config = configparser.ConfigParser()
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('Baler: Could not read combine.cfg.')
