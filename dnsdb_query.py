@@ -191,15 +191,15 @@ def main():
     global options
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', dest='config', type='string',
+    parser.add_argument('-c', '--config', dest='config', type='str',
         help='config file', default=DEFAULT_CONFIG_FILE)
-    parser.add_argument('-r', '--rrset', dest='rrset', type='string',
+    parser.add_argument('-r', '--rrset', dest='rrset', type='str',
         help='rrset <ONAME>[/<RRTYPE>[/BAILIWICK]]')
-    parser.add_argument('-n', '--rdataname', dest='rdata_name', type='string',
+    parser.add_argument('-n', '--rdataname', dest='rdata_name', type='str',
         help='rdata name <NAME>[/<RRTYPE>]')
-    parser.add_argument('-i', '--rdataip', dest='rdata_ip', type='string',
+    parser.add_argument('-i', '--rdataip', dest='rdata_ip', type='str',
         help='rdata ip <IPADDRESS|IPRANGE|IPNETWORK>')
-    parser.add_argument('-s', '--sort', dest='sort', type='string', help='sort key')
+    parser.add_argument('-s', '--sort', dest='sort', type='str', help='sort key')
     parser.add_argument('-R', '--reverse', dest='reverse', action='store_true', default=False,
         help='reverse sort')
     parser.add_argument('-j', '--json', dest='json', action='store_true', default=False,
@@ -207,16 +207,16 @@ def main():
     parser.add_argument('-l', '--limit', dest='limit', type='int', default=0,
         help='limit number of results')
 
-    parser.add_argument('', '--before', dest='before', type='string', help='only output results seen before this time')
-    parser.add_argument('', '--after', dest='after', type='string', help='only output results seen after this time')
+    parser.add_argument('', '--before', dest='before', type='str', help='only output results seen before this time')
+    parser.add_argument('', '--after', dest='after', type='str', help='only output results seen after this time')
 
-    options, args = parser.parse_args()
+    args = parser.parse_args()
     if args:
         parser.print_help()
         sys.exit(1)
 
     try:
-        cfg = parse_config(options.config)
+        cfg = parse_config(args.config)
     except IOError as e:
         sys.stderr.write(str(e))
         sys.exit(1)
@@ -228,35 +228,35 @@ def main():
         sys.stderr.write('dnsdb_query: APIKEY not defined in config file\n')
         sys.exit(1)
 
-    client = DnsdbClient(cfg['DNSDB_SERVER'], cfg['APIKEY'], options.limit)
-    if options.rrset:
-        res_list = client.query_rrset(*options.rrset.split('/'))
+    client = DnsdbClient(cfg['DNSDB_SERVER'], cfg['APIKEY'], args.limit)
+    if args.rrset:
+        res_list = client.query_rrset(*args.rrset.split('/'))
         fmt_func = rrset_to_text
-    elif options.rdata_name:
-        res_list = client.query_rdata_name(*options.rdata_name.split('/'))
+    elif args.rdata_name:
+        res_list = client.query_rdata_name(*args.rdata_name.split('/'))
         fmt_func = rdata_to_text
-    elif options.rdata_ip:
-        res_list = client.query_rdata_ip(options.rdata_ip)
+    elif args.rdata_ip:
+        res_list = client.query_rdata_ip(args.rdata_ip)
         fmt_func = rdata_to_text
     else:
         parser.print_help()
         sys.exit(1)
 
-    if options.json:
+    if args.json:
         fmt_func = json.dumps
 
     if len(res_list) > 0:
-        if options.sort:
-            if not options.sort in res_list[0]:
+        if args.sort:
+            if not args.sort in res_list[0]:
                 sort_keys = list(res_list[0].keys())
                 sort_keys.sort()
-                sys.stderr.write('dnsdb_query: invalid sort key "%s". valid sort keys are %s\n' % (options.sort, ', '.join(sort_keys)))
+                sys.stderr.write('dnsdb_query: invalid sort key "%s". valid sort keys are %s\n' % (args.sort, ', '.join(sort_keys)))
                 sys.exit(1)
-            res_list.sort(key=lambda r: r[options.sort], reverse=options.reverse)
-        if options.before:
-            res_list = filter_before(res_list, options.before)
-        if options.after:
-            res_list = filter_after(res_list, options.after)
+            res_list.sort(key=lambda r: r[args.sort], reverse=args.reverse)
+        if args.before:
+            res_list = filter_before(res_list, args.before)
+        if args.after:
+            res_list = filter_after(res_list, args.after)
 
     for res in res_list:
         sys.stdout.write('%s\n' % fmt_func(res))

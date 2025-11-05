@@ -55,8 +55,8 @@ def tiq_output(reg_file, enr_file):
     try:
         bale_enr_csvgz(inbound_data, os.path.join(tiq_dir, 'enriched', 'public_inbound', today + '.csv.gz'))
         bale_enr_csvgz(outbound_data, os.path.join(tiq_dir, 'enriched', 'public_outbound', today + '.csv.gz'))
-    except:
-        pass
+    except Exception as e:
+        logger.error('Failed to process enriched data: %s', e)
 
 
 # oh my god this is such a hack
