@@ -207,8 +207,8 @@ def main():
     parser.add_argument('-l', '--limit', dest='limit', type='int', default=0,
         help='limit number of results')
 
-    parser.add_argument('', '--before', dest='before', type='str', help='only output results seen before this time')
-    parser.add_argument('', '--after', dest='after', type='str', help='only output results seen after this time')
+    parser.add_argument('--before', dest='before', type='str', help='only output results seen before this time')
+    parser.add_argument('--after', dest='after', type='str', help='only output results seen after this time')
 
     args = parser.parse_args()
     if args:
