@@ -21,8 +21,9 @@ import optparse
 import os
 import sys
 import time
-import urllib2
-from cStringIO import StringIO
+import urllib.request, urllib.error, urllib.parse
+from io import StringIO
+
 
 try:
     import json
@@ -70,17 +71,17 @@ class DnsdbClient(object):
         url = '%s/lookup/%s' % (self.server, path)
         if self.limit:
             url += '?limit=%d' % self.limit
-        req = urllib2.Request(url)
+        req = urllib.request.Request(url)
         req.add_header('Accept', 'application/json')
         req.add_header('X-Api-Key', self.apikey)
         try:
-            http = urllib2.urlopen(req)
+            http = urllib.request.urlopen(req)
             while True:
                 line = http.readline()
                 if not line:
                     break
                 res.append(json.loads(line))
-        except (urllib2.HTTPError, urllib2.URLError), e:
+        except (urllib.error.HTTPError, urllib.error.URLError) as e:
             sys.stderr.write(str(e) + '\n')
         return res
 
@@ -118,8 +119,8 @@ def rdata_to_text(m):
 
 def parse_config(cfg_fname):
     config = {}
-    cfg_files = filter(os.path.isfile,
-            (cfg_fname, os.path.expanduser('~/.dnsdb-query.conf')))
+    cfg_files = list(filter(os.path.isfile,
+            (cfg_fname, os.path.expanduser('~/.dnsdb-query.conf'))))
 
     if not cfg_files:
         raise IOError(errno.ENOENT, 'dnsdb_query: No config files found')
@@ -216,7 +217,7 @@ def main():
 
     try:
         cfg = parse_config(options.config)
-    except IOError, e:
+    except IOError as e:
         sys.stderr.write(e.message)
         sys.exit(1)
 
@@ -247,7 +248,7 @@ def main():
     if len(res_list) > 0:
         if options.sort:
             if not options.sort in res_list[0]:
-                sort_keys = res_list[0].keys()
+                sort_keys = list(res_list[0].keys())
                 sort_keys.sort()
                 sys.stderr.write('dnsdb_query: invalid sort key "%s". valid sort keys are %s\n' % (options.sort, ', '.join(sort_keys)))
                 sys.exit(1)

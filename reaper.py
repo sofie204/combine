@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser
 import grequests
 import json
 import sys
@@ -12,7 +12,7 @@ def exception_handler(request, exception):
     logger.error("Request %r failed: %r" % (request, exception))
 
 def reap(file_name):
-    config = ConfigParser.SafeConfigParser(allow_no_value=False)
+    config = configparser.SafeConfigParser(allow_no_value=False)
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('Reaper: Could not read combine.cfg.')

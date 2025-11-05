@@ -1,5 +1,6 @@
 #! /usr/bin/env python
-import ConfigParser
+
+import configparser
 import csv
 import datetime as dt
 import dnsdb_query
@@ -26,7 +27,7 @@ def load_gi_org(filename):
     with open(filename, 'rb') as f:
         org_reader = csv.DictReader(f, fieldnames=['start', 'end', 'org'])
         for row in org_reader:
-            gi_org[row['start']] = (IPRange(row['start'], row['end']), unicode(row['org'], errors='replace'))
+            gi_org[row['start']] = (IPRange(row['start'], row['end']), str(row['org'], errors='replace'))
 
     return gi_org
 
@@ -121,7 +122,7 @@ def is_fqdn(address):
 
 
 def winnow(in_file, out_file, enr_file):
-    config = ConfigParser.SafeConfigParser(allow_no_value=True)
+    config = configparser.SafeConfigParser(allow_no_value=True)
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('Winnower: Could not read combine.cfg.')

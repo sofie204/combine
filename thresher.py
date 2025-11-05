@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser
 import bs4
 import datetime
 import feedparser
@@ -6,7 +6,7 @@ import json
 import re
 from logger import get_logger
 from csv import reader
-from itertools import ifilter
+#from itertools import ifilter
 
 logger = get_logger('thresher')
 
@@ -102,7 +102,7 @@ def process_packetmail(response, source, direction):
     data = []
     filter_comments = lambda x: not x[0].startswith('#')
     try:
-        for line in ifilter(filter_comments,
+        for line in filter(filter_comments,
                             reader(response.splitlines(), delimiter=';')):
             i = line[0]
             date = line[1].split(' ')[1]
@@ -152,7 +152,7 @@ def process_malwaregroup(response, source, direction):
 
 def thresh(input_file, output_file):
 
-    config = ConfigParser.SafeConfigParser(allow_no_value=False)
+    config = configparser.SafeConfigParser(allow_no_value=False)
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('Thresher: Could not read combine.cfg.')

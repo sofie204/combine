@@ -1,4 +1,4 @@
-import ConfigParser
+import configparser
 import datetime as dt
 import gzip
 import json
@@ -8,16 +8,16 @@ import re
 import requests
 import sys
 import time
-import unicodecsv
+import csv
 import threading
 from logger import get_logger
-from Queue import Queue
+from queue import Queue
 
 logger = get_logger('baler')
 
 
 def tiq_output(reg_file, enr_file):
-    config = ConfigParser.SafeConfigParser()
+    config = configparser.SafeConfigParser()
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('tiq_output: Could not read combine.cfg.')
@@ -64,7 +64,7 @@ def bale_reg_csvgz(harvest, output_file):
     """ bale the data as a gziped csv file"""
     logger.info('Output regular data as GZip CSV to %s' % output_file)
     with gzip.open(output_file, 'wb') as csv_file:
-        bale_writer = unicodecsv.writer(csv_file, quoting=unicodecsv.QUOTE_ALL)
+        bale_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         # header row
         bale_writer.writerow(('entity', 'type', 'direction', 'source', 'notes', 'date'))
@@ -75,7 +75,7 @@ def bale_reg_csv(harvest, output_file):
     """ bale the data as a csv file"""
     logger.info('Output regular data as CSV to %s' % output_file)
     with open(output_file, 'wb') as csv_file:
-        bale_writer = unicodecsv.writer(csv_file, quoting=unicodecsv.QUOTE_ALL)
+        bale_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         # header row
         bale_writer.writerow(('entity', 'type', 'direction', 'source', 'notes', 'date'))
@@ -86,7 +86,7 @@ def bale_enr_csv(harvest, output_file):
     """ output the data as an enriched csv file"""
     logger.info('Output enriched data as CSV to %s' % output_file)
     with open(output_file, 'wb') as csv_file:
-        bale_writer = unicodecsv.writer(csv_file, quoting=unicodecsv.QUOTE_ALL)
+        bale_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         # header row
         bale_writer.writerow(('entity', 'type', 'direction', 'source', 'notes', 'date', 'asnumber', 'asname', 'country', 'host', 'rhost'))
@@ -97,7 +97,7 @@ def bale_enr_csvgz(harvest, output_file):
     """ output the data as an enriched gziped csv file"""
     logger.info('Output enriched data as GZip CSV to %s' % output_file)
     with gzip.open(output_file, 'wb') as csv_file:
-        bale_writer = unicodecsv.writer(csv_file, quoting=unicodecsv.QUOTE_ALL)
+        bale_writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
 
         # header row
         bale_writer.writerow(('entity', 'type', 'direction', 'source', 'notes', 'date', 'asnumber', 'asname', 'country', 'host', 'rhost'))
@@ -147,7 +147,7 @@ def bale_CRITs(harvest, filename):
     #   -> type of feed (bot vs spam vs ddos, you get the picture)
     data = {'confidence': 'medium'}
     start_time = time.time()
-    config = ConfigParser.SafeConfigParser()
+    config = configparser.SafeConfigParser()
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('tiq_output: Could not read combine.cfg.\n')
@@ -156,11 +156,11 @@ def bale_CRITs(harvest, filename):
     if config.has_option('Baler', 'crits_username'):
         data['username'] = config.get('Baler', 'crits_username')
     else:
-        raise 'Please check the combine.cnf file for the crits_username field in the [Baler] section'
+        raise('Please check the combine.cnf file for the crits_username field in the [Baler] section')
     if config.has_option('Baler', 'crits_api_key'):
         data['api_key'] = config.get('Baler', 'crits_api_key')
     else:
-        raise 'Please check the combine.cnf file for the crits_api_key field in the [Baler] section'
+        raise ('Please check the combine.cnf file for the crits_api_key field in the [Baler] section')
     if config.has_option('Baler', 'crits_campaign'):
         data['campaign'] = config.get('Baler', 'crits_campaign')
     else:
@@ -169,7 +169,7 @@ def bale_CRITs(harvest, filename):
     if config.has_option('Baler', 'crits_url'):
         base_url = config.get('Baler', 'crits_url')
     else:
-        raise 'Please check the combine.cnf file for the crits_url field in the [Baler] section'
+        raise ('Please check the combine.cnf file for the crits_url field in the [Baler] section')
     if config.has_option('Baler', 'crits_maxThreads'):
         maxThreads = int(config.get('Baler', 'crits_maxThreads'))
     else:
@@ -199,7 +199,7 @@ def bale_CRITs(harvest, filename):
 
 
 def bale(input_file, output_file, output_format, is_regular):
-    config = ConfigParser.SafeConfigParser()
+    config = configparser.SafeConfigParser()
     cfg_success = config.read('combine.cfg')
     if not cfg_success:
         logger.error('Baler: Could not read combine.cfg.')
