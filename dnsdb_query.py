@@ -211,9 +211,9 @@ def main():
     parser.add_argument('--after', dest='after', type='str', help='only output results seen after this time')
 
     args = parser.parse_args()
-    if args:
-        parser.print_help()
-        sys.exit(1)
+    # if args:
+    #     parser.print_help()
+    #     sys.exit(1)
 
     try:
         cfg = parse_config(args.config)
